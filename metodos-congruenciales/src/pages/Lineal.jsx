@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import '../styles/metodos.css';
 import { lcgLineal, linealParametros } from '../funciones/metCongruenciales.js';
+import Swal from 'sweetalert2';
+
+// Función auxiliar para calcular el máximo común divisor (MCD)
+const gcd = (a, b) => {
+  while (b !== 0) {
+    const temp = b;
+    b = a % b;
+    a = temp;
+  }
+  return a;
+};
 
 const LinearAlgorithmGenerator = () => {
   const [inputs, setInputs] = useState({
@@ -29,7 +40,11 @@ const LinearAlgorithmGenerator = () => {
     const { x0, k, c, p, d } = inputs;
 
     if (!x0 || !k || !c || !p || !d) {
-      alert('Por favor, complete todos los campos');
+      Swal.fire({
+        icon: "warning",
+        title: "Campos incompletos",
+        text: "Por favor, complete todos los campos",
+      });
       return;
     }
 
@@ -39,6 +54,25 @@ const LinearAlgorithmGenerator = () => {
     const pVal = parseInt(p, 10);
     const dVal = parseInt(d, 10);
     const nVal = pVal + 1;
+
+    //  Validar que p sea potencia de 2
+    if ((pVal & (pVal - 1)) !== 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "El valor de P debe ser una potencia de 2",
+      });
+      return;
+    }
+    //  Validar que c sea relativamente primo a p
+    if (gcd(cVal, pVal) !== 1) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "El valor de c debe ser relativamente primo a P (MCD = 1).",
+      });
+      return;
+    }
 
     // Ejecutar generador (10 pasos por defecto; ajusta si necesitas otra cantidad)
     const filas = lcgLineal({ x0: seed, k: kVal, c: cVal, p: pVal, d: dVal, n: nVal });
