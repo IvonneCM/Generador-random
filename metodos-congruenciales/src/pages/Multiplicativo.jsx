@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/metodos.css';
 import { lcgMultiplicativo } from '../funciones/metCongruenciales.js';
+import Swal from 'sweetalert2';
 
 const MultiplicativeAlgorithmGenerator = () => {
   const [inputs, setInputs] = useState({
@@ -40,6 +41,16 @@ const MultiplicativeAlgorithmGenerator = () => {
       const dVal = parseInt(d, 10);
       const nVal = pVal + 1; // generar exactamente p números
       const opcionA = cOption; // '3+8k' o '5+8k'
+
+      //  Validar que p sea potencia de 2
+      if ((seed%2) !== 1) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "El valor de la semilla X0 debe ser impar",
+        });
+        return;
+      }
 
       const filas = lcgMultiplicativo({ x0: seed, k: kVal, p: pVal, d: dVal, n: nVal, opcionA, pEsCantidad: true });
 
